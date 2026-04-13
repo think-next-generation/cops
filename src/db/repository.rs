@@ -27,6 +27,10 @@ pub trait TaskRepository: Send + Sync {
 
     /// Count tasks grouped by status
     async fn count_by_status(&self) -> Result<Vec<(TaskStatus, i64)>>;
+
+    /// Count tasks grouped by assignee and status
+    /// Returns: (assignee_id, status, count)
+    async fn count_by_assignee(&self) -> Result<Vec<(String, TaskStatus, i64)>>;
 }
 
 /// Repository trait for Question CRUD operations

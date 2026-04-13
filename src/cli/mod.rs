@@ -1,6 +1,7 @@
 //! CLI module - command-line interface handling
 
 mod args;
+mod agent;
 mod board;
 mod comment;
 mod config_cmd;
@@ -46,6 +47,7 @@ pub fn run() -> anyhow::Result<()> {
             Commands::Status(cmd) => status::handle(cmd, &ctx).await,
             Commands::Config(cmd) => config_cmd::handle(cmd, &ctx).await,
             Commands::Db(cmd) => db_cmd::handle(cmd, &ctx).await,
+            Commands::Agent(cmd) => agent::handle(cmd, &ctx).await,
             Commands::Web(cmd) => web::handle(cmd, &ctx).await,
         }
     })?;

@@ -264,4 +264,33 @@ impl TaskRepository for SqliteTaskRepository {
             .map(|(status, count)| Ok((status.parse().map_err(|e: String| Error::Parse(e))?, count)))
             .collect()
     }
+
+    async fn count_by_assignee(&self) -> Result<Vec<(String, TaskStatus, i64)>> {
+        // Use json_each to expand assignees JSON array
+        let rows = sqlx::query_as::<_, (String, String, i64)>(
+            r#"
+            SELECT
+                json_each.value as assignee_id,
+                tasks.status,
+                COUNT(*) as count
+            FROM tasks,
+            json_each(tasks.assignees)
+            WHERE tasks.status IN ('ASSIGNED', 'IN_PROGRESS', 'BLOCKED', 'WAITING')
+            GROUP BY json_each.value, tasks.status
+            ORDER BY json_each.value, tasks.status
+            "#,
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        rows.into_iter()
+            .map(|(assignee_id, status, count)| {
+                Ok((
+                    assignee_id,
+                    status.parse().map_err(|e: String| Error::Parse(e))?,
+                    count,
+                ))
+            })
+            .collect()
+    }
 }

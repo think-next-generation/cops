@@ -39,12 +39,13 @@ case "$(basename "$SHELL")" in
     *)    SHELL_RC="$HOME/.profile" ;;
 esac
 
-# 添加 PATH 配置
+# 添加 PATH 和 COPS_CONFIG 配置
 if ! grep -q "$INSTALL_DIR" "$SHELL_RC" 2>/dev/null; then
     echo "" >> "$SHELL_RC"
     echo "# COPS" >> "$SHELL_RC"
     echo "export PATH=\"\$PATH:$INSTALL_DIR\"" >> "$SHELL_RC"
-    echo "已添加 PATH 到 $SHELL_RC"
+    echo "export COPS_CONFIG=\"\$HOME/.cops/cops.toml\"" >> "$SHELL_RC"
+    echo "已添加 PATH 和 COPS_CONFIG 到 $SHELL_RC"
     echo "请运行: source $SHELL_RC"
 else
     echo "PATH 已配置"

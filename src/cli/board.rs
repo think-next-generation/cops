@@ -64,8 +64,9 @@ async fn handle_show(
             .map(|(_, c)| *c)
             .unwrap_or(0);
 
-        let dash_len = 60usize.saturating_sub(column.len()).saturating_sub(count.to_string().len());
+        let dash_len = 70usize.saturating_sub(column.len()).saturating_sub(count.to_string().len());
         println!("┌─ {} ({}) {}", column, count, "─".repeat(dash_len));
+        println!("│ {:8} │ {:30} │ {:20}", "ID", "Title", "Assignee");
 
         let column_tasks: Vec<_> = tasks.iter()
             .filter(|t| t.status.to_string() == *column)
@@ -77,12 +78,20 @@ async fn handle_show(
             for task in column_tasks.iter().take(5) {
                 let id_str = task.id.to_string();
                 let id_short = if id_str.len() >= 8 { &id_str[..8] } else { &id_str };
-                let title = if task.title.len() > 50 {
-                    format!("{}...", &task.title[..47.min(task.title.len())])
+                let title = if task.title.len() > 30 {
+                    format!("{}...", &task.title[..27.min(task.title.len())])
                 } else {
                     task.title.clone()
                 };
-                println!("│ [{}] {}", id_short, title);
+                let assignee_str = if task.assignees.is_empty() {
+                    "unassigned".to_string()
+                } else {
+                    task.assignees.iter()
+                        .map(|a| a.id.clone())
+                        .collect::<Vec<_>>()
+                        .join(",")
+                };
+                println!("│ [{}] {:30} │ {}", id_short, title, assignee_str);
             }
             if column_tasks.len() > 5 {
                 println!("│ ... and {} more", column_tasks.len() - 5);

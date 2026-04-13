@@ -44,6 +44,10 @@ pub enum Commands {
     #[command(subcommand)]
     Db(DbCommands),
 
+    /// Agent management and status
+    #[command(subcommand)]
+    Agent(AgentCommands),
+
     /// Start web server
     Web(WebCommands),
 }
@@ -279,4 +283,14 @@ pub struct WebCommands {
     /// API only (no SPA frontend)
     #[arg(long)]
     pub no_ui: bool,
+}
+
+#[derive(Subcommand)]
+pub enum AgentCommands {
+    /// Show agent workload status
+    Status {
+        /// Specific agent ID to query
+        #[arg(long)]
+        agent: Option<String>,
+    },
 }
