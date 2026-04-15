@@ -1,6 +1,6 @@
 # COPS - Company Operations Task System
 
-任务管理系统，基于 Rust + SQLite 构建。
+任务管理系统，基于 Rust + SQLite(可修改配置文件切换为mariaDB/Mysql) 构建。
 
 ## 功能特性
 
