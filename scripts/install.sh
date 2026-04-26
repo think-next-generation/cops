@@ -23,8 +23,12 @@ chmod +x "$INSTALL_DIR/cops"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "创建默认配置..."
     cp "$(dirname "$0")/cops.toml.example" "$CONFIG_FILE"
-    # 更新数据库路径
-    sed -i '' "s|./data/cops.db|$DATA_DIR/cops.db|g" "$CONFIG_FILE"
+    # 更新数据库路径 (兼容 macOS 和 Linux)
+    if [[ "$(uname)" == "Darwin" ]]; then
+        sed -i '' "s|./data/cops.db|$DATA_DIR/cops.db|g" "$CONFIG_FILE"
+    else
+        sed -i "s|./data/cops.db|$DATA_DIR/cops.db|g" "$CONFIG_FILE"
+    fi
     echo "配置文件: $CONFIG_FILE"
     echo "请根据需要编辑配置文件"
 else
